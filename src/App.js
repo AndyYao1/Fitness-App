@@ -1,17 +1,21 @@
 import './App.css';
 import { Route, Routes } from 'react-router';
-import Page1 from './Routes/page1';
-import Page2 from './Routes/page2';
 import NavBar from './Components/NavBar';
+import Workouts from './Routes/workouts';
+import Macros from './Routes/macros';
+import Home from './Routes/home';
+import Dashboard from './Routes/dashboard';
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="page1" element={<Page1/>} />
-        <Route path="page2" element={<Page2/>} />
-      </Routes>
       <NavBar />
+      <Routes>
+        <Route path="/" element={<Home/>} />
+        <Route path="dashboard" element={<Dashboard/>} />
+        <Route path="workouts" element={<Workouts/>} />
+        <Route path="macros" element={<Macros/>} />
+      </Routes>
     </>
   );
 }

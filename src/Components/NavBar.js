@@ -1,14 +1,30 @@
 import './NavBar.css';
-import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import { Link } from 'react-router';
+import { Sidebar, Menu, MenuItem, sidebarClasses } from 'react-pro-sidebar';
+import { NavLink } from 'react-router';
+import { FaDumbbell, FaHome } from "react-icons/fa";
+import { GiKnifeFork } from "react-icons/gi";
+import { MdSpaceDashboard } from 'react-icons/md';
+
 
 function NavBar() {
   return (
-    <div id="header">
-      <Sidebar>
+    <div id="app">
+      <Sidebar
+        rootStyles={{
+          [`.${sidebarClasses.container}`]: {
+            height:"100vh",
+            position: "fixed",
+            width: "15vw",
+            
+          }
+        }}
+      >
+        <h1 className="header"> Fitness Tracker </h1>
         <Menu>
-          <MenuItem component={<Link to="/page1"/>}> Page1 </MenuItem>
-          <MenuItem component={<Link to="/page2"/>}> Page2 </MenuItem>
+          <MenuItem icon={<FaHome/>} component={<NavLink to="/"/>}> Home </MenuItem>
+          <MenuItem icon={<MdSpaceDashboard/>} component={<NavLink to="/dashboard"/>}> Dashboard </MenuItem>
+          <MenuItem icon={<FaDumbbell/>} component={<NavLink to="/workouts"/>}> Workouts </MenuItem>
+          <MenuItem icon={<GiKnifeFork/>} component={<NavLink to="/macros"/>}> Macros </MenuItem>
         </Menu>
       </Sidebar>
     </div>

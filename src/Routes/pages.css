@@ -1,0 +1,40 @@
+.page {
+    margin-left: 250px;
+    margin-right: 5%
+}
+
+.pageHeader {
+    margin-top: 0px;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+
+.addDateGroup{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+#addDateInput{
+    width: 125px;
+    margin-left: 8px;
+    padding: 12px 0;
+    text-align: center;
+}
+
+#addDateButton{
+    margin-left: 8px;
+}
+
+#addDateLabel{
+    padding: 4px 0;
+    margin-top: .5rem;
+}
+
+.removeExerciseBtn{
+    float: right;
+}
+
+.exerciseListItem{
+    line-height: 31px;
+}
