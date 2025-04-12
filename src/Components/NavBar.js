@@ -1,4 +1,3 @@
-import './NavBar.css';
 import { Sidebar, Menu, MenuItem, sidebarClasses } from 'react-pro-sidebar';
 import { NavLink } from 'react-router';
 import { FaDumbbell, FaHome } from "react-icons/fa";
@@ -19,7 +18,7 @@ function NavBar() {
           }
         }}
       >
-        <h1 className="header"> Fitness Tracker </h1>
+        <h1 style={{textAlign:'center'}}> Fitness Tracker </h1>
         <Menu>
           <MenuItem icon={<FaHome/>} component={<NavLink to="/"/>}> Home </MenuItem>
           <MenuItem icon={<MdSpaceDashboard/>} component={<NavLink to="/dashboard"/>}> Dashboard </MenuItem>
