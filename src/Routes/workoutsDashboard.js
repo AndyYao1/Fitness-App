@@ -3,7 +3,7 @@ import "./pages.css";
 import { workoutsData } from "../data/workouts.ts";
 import ExerciseChart from "../Components/exerciseChart.js";
 
-function Dashboard(){
+function WorkoutsDashboard(){
     let parsedData = new Map();
     for (let workout of workoutsData.toReversed()) {
         for (let data of workout.workouts) {
@@ -27,4 +27,4 @@ function Dashboard(){
     );
 }
 
-export default Dashboard;
+export default WorkoutsDashboard;

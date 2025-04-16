@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './workoutsListItem.css'
 import { Accordion, Button, ListGroup, Form, Col, Row } from "react-bootstrap";
 import React, { useState } from "react";
 
@@ -35,9 +36,10 @@ function WorkoutsListItem({data}){
                                     {
                                         Object.entries(exercise)
                                         .filter(([key]) => key !== "name")
+                                        .reverse()
                                         .map(([key, value]) => 
                                         <>
-                                        <Col xs={2}><Form.Control size="sm" placeholder="Enter value" type="text" defaultValue={value}/></Col>
+                                        <Col xs={1}><Form.Control size="sm" type="text" defaultValue={value}/></Col>
                                         <Col xs={1}>{key}</Col>
                                         </>)
                                     }

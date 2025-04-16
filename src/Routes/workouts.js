@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import "./pages.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Form, Accordion } from "react-bootstrap";
 import { workoutsData } from "../data/workouts.ts";
 import WorkoutsListItem from "../Components/workoutsListItem.js";
+import "./pages.css";
 
 function Workouts(){
     const [allWorkoutsData, setAllWorkoutsData] = useState(workoutsData);
@@ -51,9 +50,12 @@ function Workouts(){
         <div className="page" id="workouts">    
             <h1 className="pageHeader"> Workouts </h1>
             <Form.Group className="addDateGroup">
-                <Form.Label id="addDateLabel">Select Date:</Form.Label>
-                <Form.Control id="addDateInput" type="date" value={date} onChange={e => setDate(e.target.value)}/>
-                <Button variant="primary" size="lg" id="addDateButton" onClick={handleAddDate}>
+                <Form.Label className="addDateLabel">Select Date:</Form.Label>
+                <Form.Control className="addDateInput" type="date" value={date} onChange={e => {
+                    setDate(e.target.value);
+                    setTimeout(() => e.target.blur(), 50);
+                }}/>
+                <Button variant="primary" size="lg" className="addDateButton" onClick={handleAddDate}>
                     Add Date
                 </Button>
             </Form.Group>
