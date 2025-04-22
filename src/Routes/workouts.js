@@ -9,7 +9,6 @@ function Workouts(){
     // default date is today
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const dates = allWorkoutsData.map((workout) => workout.date);
-    // console.log(allWorkoutsData);
     const [activeKey, setActiveKey] = useState(allWorkoutsData[0].date);
 
     const handleAddDate = (event) => {
@@ -41,6 +40,7 @@ function Workouts(){
         }
     }
 
+    // YYYY-MM-DD to MM/DD/YYYY, convert date format from react form to DB
     const formatDate = (date) => {
         const arr = date.split("-")
         return arr[1] + "/" + arr[2] + "/" + arr[0]
