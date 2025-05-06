@@ -27,7 +27,7 @@ function NavBar() {
           </SubMenu>
           <SubMenu label="Nutrition" defaultOpen={true}>
             <MenuItem icon={<GiKnifeFork/>} component={<NavLink to="/macros"/>}> All Meals </MenuItem>
-            <MenuItem icon={<MdSpaceDashboard/>} component={<NavLink to="/mealsdashboard"/>}> Dashboard </MenuItem>
+            <MenuItem icon={<MdSpaceDashboard/>} component={<NavLink to="/macrosdashboard"/>}> Dashboard </MenuItem>
           </SubMenu>
         </Menu>
       </Sidebar>

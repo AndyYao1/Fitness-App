@@ -1,6 +1,6 @@
 export const macrosData = [
     {
-        "date": "05/02/2025",
+        "date": "05/06/2025",
         "meals":[
             {
                 "name": "Coffee",
@@ -45,6 +45,38 @@ export const macrosData = [
                 "carbohydrates": 33,
                 "protein": 11,
             }
+        ]
+    },
+    {
+        "date": "05/01/2025",
+        "meals":[
+            {
+                "name": "Coffee",
+                "image": "https://www.copyrightcoffee.com/deliver.jpg",
+                "calories": 280,
+                "fat": 11,
+                "carbohydrates": 33,
+                "protein": 11,
+            },
+            {
+                "name": "Chipotle Burrito Bowl",
+                "calories": 1100,
+                "fat": 55,
+                "carbohydrates": 91,
+                "protein": 58,   
+            },
+        ]
+    },
+    {
+        "date": "04/01/2025",
+        "meals":[
+            {
+                "name": "Chipotle Burrito Bowl",
+                "calories": 1100,
+                "fat": 55,
+                "carbohydrates": 91,
+                "protein": 58,   
+            },
         ]
     }
 ];

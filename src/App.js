@@ -5,6 +5,7 @@ import Workouts from './Routes/workouts';
 import Macros from './Routes/macros';
 import Home from './Routes/home';
 import WorkoutsDashboard from './Routes/workoutsDashboard';
+import MacrosDashboard from './Routes/macrosDashboard';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Route path="workoutsdashboard" element={<WorkoutsDashboard/>} />
         <Route path="workouts" element={<Workouts/>} />
         <Route path="macros" element={<Macros/>} />
-        <Route path="mealsdashboard" element={<WorkoutsDashboard/>} />
+        <Route path="macrosdashboard" element={<MacrosDashboard/>} />
       </Routes>
     </>
   );
