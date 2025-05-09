@@ -41,3 +41,12 @@
 .addMealImg{
     cursor: pointer;
 }
+
+.macroPieChartPlaceholder{
+    width: 70vw;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: space-around;
+}

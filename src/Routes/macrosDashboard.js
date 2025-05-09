@@ -123,23 +123,24 @@ function MacrosDashboard() {
                 <Form.Label className="addDateLabel">Select Date:</Form.Label>
                 <Form.Control className="addDateInput" defaultValue={unformatDate(pieChartDate)} type="date" onChange={handleDateChange} />
             </Form.Group>
-            <PieChart width={600} height={300}>
-                <Pie
-                    data={pieChartData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    fill="#82ca9d"
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                >
-                    {pieChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                </Pie>
-                <Legend width={200} align="right" verticalAlign="middle" content={renderPieChartLegend} />
-            </PieChart>
+            { pieChartAllMeals?.length > 0 ?
+                <PieChart width={600} height={300}>
+                    <Pie
+                        data={pieChartData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        fill="#82ca9d"
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                    >
+                        {pieChartData.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> ))}
+                    </Pie>
+                    <Legend width={200} align="right" verticalAlign="middle" content={renderPieChartLegend} />
+                </PieChart> : 
+                <div className="macroPieChartPlaceholder"> No macros recorded for {pieChartDate} </div>
+            }
             <div className="allChartsContainer">
                 <MacroChart data={caloriesLineChartData} macro="Calories"/>
                 <MacroChart data={fatLineChartData} macro="Fat"/>
