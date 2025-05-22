@@ -1,0 +1,76 @@
+'use client'
+
+import './workoutsListItem.css';
+import { Accordion, Button, ListGroup, Form, Col, Row } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+
+function WorkoutsListItem({date, workouts, saveWorkouts, isActive, deleteWorkout}){
+    const [exercises, setExercises] = useState(workouts);
+    const [changed, setChanged] = useState(false);
+
+    // TODO: Add, remove, save to DB
+    const handleRemoveExercise = (removedIndex) => {
+        setExercises(exercises.filter((_, index) => index !== removedIndex));
+        deleteWorkout(date, exercises[removedIndex]);
+    }
+
+    const handleAddExercise = () => {
+        const newExercise = { name: "", lbs: "", reps: "", workout_id: crypto.randomUUID?.()};
+        setExercises(prev => [...prev, newExercise]);
+        setChanged(true);
+    };      
+
+    const handleUpdateExercise = (updatedIndex, field, value) => {
+        setExercises(prev => prev
+            .map((exercise, index) => 
+                index == updatedIndex ? {...exercise, [field]: value} : exercise));
+        setChanged(true);
+    }
+
+    const firstRender = useRef(true);
+    useEffect(() =>{
+        if (firstRender.current){
+            firstRender.current = false;
+            return;
+        }
+        if (!isActive){
+            saveWorkouts(date, exercises, changed);
+            setChanged(false);
+        }
+    }, [isActive]);
+
+    // YYYY-MM-DD to MM/DD/YYYY, convert date format from react form to DB
+    const formatDate = (date) => {
+        const arr = date.split("-")
+        return arr[1] + "/" + arr[2] + "/" + arr[0]
+    }
+
+    return(
+        <Accordion.Item eventKey={date}>
+            <Accordion.Header> {formatDate(date)} </Accordion.Header>
+            <Accordion.Body>
+                <ListGroup>
+                    { exercises?.map((exercise, index) => (
+                        <ListGroup.Item className='exerciseListItem' key={exercise.workout_id}>
+                            <Form>
+                                <Row xs={16}>
+                                    <Col xs={2}><Form.Control size="sm" placeholder="Enter exercise" type="text" value={exercise.name} onChange={(e) => handleUpdateExercise(index, "name", e.target.value)}/></Col>: 
+                                    <Col xs={1}><Form.Control size="sm" type="text" value={exercise.reps} onChange={(e) => handleUpdateExercise(index, "reps", e.target.value)}/></Col>
+                                    <Col xs={1}>reps</Col>
+                                    <Col xs={1}><Form.Control size="sm" type="text" value={exercise.lbs} onChange={(e) => handleUpdateExercise(index, "lbs", e.target.value)}/></Col>
+                                    <Col xs={1}>lbs</Col>  
+                                    <Col>
+                                        <Button className='exerciseBtnRight' size="sm" variant="danger" onClick={() => {handleRemoveExercise(index)}}> Remove </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </ListGroup.Item>
+                    ))}
+                    <ListGroup.Item> <Button size="sm" onClick={handleAddExercise}>Add Exercise</Button>  <Button size="sm" onClick={() => console.log(exercises)}>Log</Button> </ListGroup.Item>
+                </ListGroup>
+            </Accordion.Body>
+        </Accordion.Item>
+    );
+}
+
+export default WorkoutsListItem;

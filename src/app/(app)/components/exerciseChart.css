@@ -1,0 +1,45 @@
+.chartContainer{
+    margin-bottom: 15px;
+    margin-right: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: lightgray;
+    border-radius: 5px;
+    padding-top: 5px;
+    height: 320px;
+    width: 45%;
+}
+
+.customChartTooltip{
+    width: 100px;
+    margin: 0;
+    line-height: 24px;
+    border: 1px solid #f5f5f5;
+    background-color: #fffc;
+    padding:10px
+}
+
+.customChartTooltipInfo{
+    margin: 0
+}
+
+.exerciseChartHeader{
+    margin-left: 20px;
+    font-weight: 500;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    padding-right: 10px;
+    z-index: 2;
+    position: relative;
+}
+
+.exerciseChartHeaderBtn{
+    float: right;
+    margin-right: 5px;
+}
+
+.exerciseChartBody{
+    z-index: 1;
+    overflow: hidden;
+    position: relative;
+}
