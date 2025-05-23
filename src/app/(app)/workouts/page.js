@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Button, Form, Accordion } from "react-bootstrap";
-import { workoutsData } from "../data/workouts.ts";
 import WorkoutsListItem from "../components/workoutsListItem.js";
 import { createClient } from "../../../utils/supabase/client.ts";
-import { saveWorkoutData, loadWorkoutData, deleteWorkout } from "./actions.ts";
+import { saveWorkoutData, loadWorkoutData, deleteWorkout } from "../actions/workouts.ts";
 
 function Workouts(){
     const supabase = createClient();
@@ -15,14 +14,9 @@ function Workouts(){
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const dates = allWorkoutsData.map((workout) => workout.date);
     const [activeKey, setActiveKey] = useState(null);
-    const [user, setUser] = useState(null);
 
     const fetchData = async () => {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) {
-
-        } else {
-            setUser(data.user.id);
+        try {
             loadWorkoutData()
                 .then(workoutData => {
                     let workoutMap = new Map();
@@ -33,12 +27,17 @@ function Workouts(){
                             workoutMap.set(workout.date, [workout]);
                         }
                     }
-
-                    setAllWorkoutsData(Array.from(workoutMap)
+                    
+                    const formattedWorkouts = Array.from(workoutMap)
                         .sort()
                         .toReversed()
-                        .map(([date, exercises]) => ({date:date, workouts:exercises}))); 
-                    setActiveKey(workoutData[workoutData.length-1].date)});
+                        .map(([date, exercises]) => ({date:date, workouts:exercises}));
+                        
+                    setAllWorkoutsData(formattedWorkouts);
+                    setActiveKey(formattedWorkouts[0].date)});
+        }
+        catch {
+
         }
     }
 

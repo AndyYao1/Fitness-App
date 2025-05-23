@@ -12,6 +12,7 @@ export async function saveWorkoutData(date, workouts) {
                 ({...workout, user_id: user_id, date:date})
         ))
         .select();
+    console.log(error);
 }
 
 export async function loadWorkoutData() {

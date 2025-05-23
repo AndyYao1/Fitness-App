@@ -6,10 +6,6 @@ import { Button } from "react-bootstrap";
 import "./exerciseChart.css";
 
 function ExerciseChart({ data }) {
-    // default to data from past month
-    const [dateRange, setDateRange] = useState("1M");
-    const [filteredData, setFilteredData] = useState([]);
-
     // filters data based on date range
     const filterData = (newDateRange) => {
         const today = new Date()
@@ -31,10 +27,15 @@ function ExerciseChart({ data }) {
                 startDate.setFullYear(today.getFullYear() - 30);
                 break;
         }
-        return data[1].filter(d => {
-            return d.date >= startDate;
-        })
+
+        return data[1]
+            .filter(d => d.date >= startDate)
+            .sort((a, b) => a.date - b.date);
     };
+
+    // default to data from past month
+    const [dateRange, setDateRange] = useState("1M");
+    const [filteredData, setFilteredData] = useState(filterData(dateRange));
 
     // MM/DD/YYYY => MM/DD/YY for shorter date display
     const formatDate = (date) => {
@@ -62,22 +63,22 @@ function ExerciseChart({ data }) {
         <div className="chartContainer">
             <div className="exerciseChartHeader">
                 {data[0]}
-                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => {setFilteredData(filterData("ALL")); setDateRange("ALL");}}>ALL</Button>
-                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => {setFilteredData(filterData("1Y")); setDateRange("1Y");}}>1Y</Button>
-                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => {setFilteredData(filterData("6M")); setDateRange("6M");}}>6M</Button>
-                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => {setFilteredData(filterData("3M")); setDateRange("3M");}}>3M</Button>
-                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => {setFilteredData(filterData("1M")); setDateRange("1M");}}>1M</Button>
+                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => { setFilteredData(filterData("ALL")); setDateRange("ALL"); }}>ALL</Button>
+                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => { setFilteredData(filterData("1Y")); setDateRange("1Y"); }}>1Y</Button>
+                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => { setFilteredData(filterData("6M")); setDateRange("6M"); }}>6M</Button>
+                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => { setFilteredData(filterData("3M")); setDateRange("3M"); }}>3M</Button>
+                <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => { setFilteredData(filterData("1M")); setDateRange("1M"); }}>1M</Button>
             </div>
             {filteredData.length > 0 ?
                 <ResponsiveContainer className="exerciseChartBody">
-                    <LineChart data={filteredData} key={data[0]}
+                    <LineChart data={filteredData}
                         margin={{
                             top: 5,
                             right: 60,
                             left: 20,
                             bottom: 65,
                         }}>
-                        <CartesianGrid strokeDasharray="3 2" />
+                        <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="date" type="number" domain={['dataMin', 'dataMax']} tickFormatter={(date) => formatDate(date)}>
                             <Label value="Date" position="bottom" offset={-2} />
                         </XAxis>
@@ -87,7 +88,7 @@ function ExerciseChart({ data }) {
                         <Tooltip content={<CustomTooltip />} />
                         <Line type="monotone" dataKey="lbs" stroke="#82ca9d" />
                     </LineChart>
-                </ResponsiveContainer> 
+                </ResponsiveContainer>
                 : <div className="exercisePlaceholder"> No data recorded for {dateRange} </div>
             }
         </div>

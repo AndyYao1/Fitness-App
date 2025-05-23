@@ -1,25 +1,41 @@
-import React from "react";
-import { workoutsData } from "../data/workouts.ts";
-import ExerciseChart from "../components/exerciseChart.js";
+'use client'
 
-function WorkoutsDashboard(){
-    let parsedData = new Map();
-    for (let workout of workoutsData.toReversed()) {
-        for (let data of workout.workouts) {
-            if (parsedData.has(data.name)) {
-                parsedData.get(data.name).push({"date": Date.parse(workout.date), "lbs": data.lbs, "reps": data.reps});
-            } else {
-                parsedData.set(data.name, [{"date": Date.parse(workout.date), "lbs": data.lbs, "reps": data.reps}]);
-            }
+import React, { useEffect, useState } from "react";
+import ExerciseChart from "../components/exerciseChart.js";
+import { loadWorkoutData } from "../actions/workouts.ts";
+
+function WorkoutsDashboard() {
+    const [parsedData, setParsedData] = useState(new Map());
+
+    const fetchData = async () => {
+        try {
+            loadWorkoutData()
+                .then(workoutData => {
+                    let workoutMap = new Map();
+                    for (let workout of workoutData) {
+                        if (workoutMap.has(workout.name)) {
+                            workoutMap.get(workout.name).push({ "date": Date.parse(workout.date), "lbs": workout.lbs, "reps": workout.reps });
+                        } else {
+                            workoutMap.set(workout.name, [{ "date": Date.parse(workout.date), "lbs": workout.lbs, "reps": workout.reps }]);
+                        }
+                    }
+                    setParsedData(workoutMap);
+                });
+        } catch {
+
         }
     }
-    
-    return(
-        <div className="page" id="Dashboard"> 
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    return (
+        <div className="page" id="Dashboard">
             <h1 className="pageHeader"> Dashboard </h1>
             <div className="allChartsContainer">
-                { Array.from(parsedData).map((data, index) => (
-                    <ExerciseChart data={data} key={data[0]+index}/>
+                {Array.from(parsedData)?.map((data, index) => (
+                    <ExerciseChart data={data} key={data[0] + index} />
                 ))}
             </div>
         </div>
