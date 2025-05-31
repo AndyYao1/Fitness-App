@@ -72,3 +72,8 @@ body {
     justify-content: space-around;
     height: 85%;
 }
+
+.logoutButton{
+    float: right;
+    margin: 10px;
+}

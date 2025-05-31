@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from "react";
-import { macrosData } from "../data/macros.ts";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Legend } from "recharts";
 import { Form } from "react-bootstrap";
 import MacroChart from "../components/macroChart.js";
+import { loadAllMacroData } from "../actions/macros.ts";
 
 function MacrosDashboard() {
     let caloriesLineChartData = new Map();
@@ -12,35 +12,57 @@ function MacrosDashboard() {
     let carbohydratesLineChartData = new Map();
     let proteinLineChartData = new Map();
 
-    for (let macro of macrosData.toReversed()) {
-        for (let data of macro.meals) {
-            const parsedDate = Date.parse(macro.date);
-            if (data.calories !== undefined) {
-                if (caloriesLineChartData.has(parsedDate)){
-                    caloriesLineChartData.set(parsedDate, caloriesLineChartData.get(parsedDate) + data.calories);
+    const [macrosData, setMacrosData] = useState([]);
+    const [pieChartDate, setPieChartDate] = useState(null);
+    const fetchData = async () => {
+        try {
+            loadAllMacroData().then(allMacroData => {
+                let mostRecentDate;
+                if (allMacroData.length > 0) {
+                    mostRecentDate = allMacroData.reduce((mostRecentMeal, currMeal) => 
+                        mostRecentMeal.date > currMeal.date ? mostRecentMeal : currMeal).date;
                 } else {
-                    caloriesLineChartData.set(parsedDate, data.calories);
+                    mostRecentDate = new Date();
+                }
+
+                setMacrosData(allMacroData);
+                setPieChartDate(mostRecentDate);
+            });
+        } catch {
+
+        }
+    }
+
+    useEffect(() => { fetchData() }, []);
+
+    if (macrosData.length > 0) {
+        for (let data of macrosData) {
+            if (data.calories !== undefined) {
+                if (caloriesLineChartData.has(data.date)) {
+                    caloriesLineChartData.set(data.date, caloriesLineChartData.get(data.date) + data.calories);
+                } else {
+                    caloriesLineChartData.set(data.date, data.calories);
                 }
             }
             if (data.carbohydrates !== undefined) {
-                if (carbohydratesLineChartData.has(parsedDate)){
-                    carbohydratesLineChartData.set(parsedDate, carbohydratesLineChartData.get(parsedDate) + data.carbohydrates);
+                if (carbohydratesLineChartData.has(data.date)) {
+                    carbohydratesLineChartData.set(data.date, carbohydratesLineChartData.get(data.date) + data.carbohydrates);
                 } else {
-                    carbohydratesLineChartData.set(parsedDate, data.carbohydrates);
+                    carbohydratesLineChartData.set(data.date, data.carbohydrates);
                 }
             }
             if (data.fat !== undefined) {
-                if (fatLineChartData.has(parsedDate)){
-                    fatLineChartData.set(parsedDate, fatLineChartData.get(parsedDate) + data.fat);
+                if (fatLineChartData.has(data.date)) {
+                    fatLineChartData.set(data.date, fatLineChartData.get(data.date) + data.fat);
                 } else {
-                    fatLineChartData.set(parsedDate, data.fat);
+                    fatLineChartData.set(data.date, data.fat);
                 }
             }
             if (data.protein !== undefined) {
-                if (proteinLineChartData.has(parsedDate)){
-                    proteinLineChartData.set(parsedDate, proteinLineChartData.get(parsedDate) + data.protein);
+                if (proteinLineChartData.has(data.date)) {
+                    proteinLineChartData.set(data.date, proteinLineChartData.get(data.date) + data.protein);
                 } else {
-                    proteinLineChartData.set(parsedDate, data.protein);
+                    proteinLineChartData.set(data.date, data.protein);
                 }
             }
         }
@@ -48,18 +70,15 @@ function MacrosDashboard() {
 
     // YYYY-MM-DD to MM/DD/YYYY, convert date format from react form to DB
     const formatDate = (date) => {
-        const arr = date.split("-")
-        return arr[1] + "/" + arr[2] + "/" + arr[0]
+        if (date) {
+            const arr = date.split("-");
+            return arr[1] + "/" + arr[2] + "/" + arr[0];
+        } else {
+            return "";
+        }
     }
 
-    // MM/DD/YYYY to YYYY-MM-DD, only used to set default value of date field on initial render to latest date from DB
-    const unformatDate = (date) => {
-        const arr = date.split("/")
-        return arr[2] + "-" + arr[0] + "-" + arr[1]
-    }
-
-    const [pieChartDate, setPieChartDate] = useState(macrosData[0].date);
-    const pieChartAllMeals = macrosData.find((data) => data.date === pieChartDate)?.meals;
+    const pieChartAllMeals = macrosData?.filter(meal => meal.date == pieChartDate);
 
     let fatPieChartCnt = 0;
     let carbohydratesPieChartCnt = 0;
@@ -100,8 +119,8 @@ function MacrosDashboard() {
                 <ul>
                     {
                         payload.map((entry, index) => (
-                            <li key={`item-${index}`} style={{"color": COLORS[index % COLORS.length]}}>
-                                <span style={{"color": "black"}}>
+                            <li key={`item-${index}`} style={{ "color": COLORS[index % COLORS.length] }}>
+                                <span style={{ "color": "black" }}>
                                     {entry.value.charAt(0).toUpperCase() + entry.value.slice(1) + ": " + entry.payload.value}
                                 </span>
                             </li>
@@ -113,7 +132,7 @@ function MacrosDashboard() {
     }
 
     const handleDateChange = (e) => {
-        setPieChartDate(formatDate(e.target.value));
+        setPieChartDate(e.target.value);
         setTimeout(() => e.target.blur(), 50);
     }
 
@@ -122,9 +141,9 @@ function MacrosDashboard() {
             <h1 className="pageHeader"> Dashboard </h1>
             <Form.Group className="addDateGroup">
                 <Form.Label className="addDateLabel">Select Date:</Form.Label>
-                <Form.Control className="addDateInput" defaultValue={unformatDate(pieChartDate)} type="date" onChange={handleDateChange} />
+                <Form.Control className="addDateInput" defaultValue={pieChartDate} type="date" onChange={handleDateChange} />
             </Form.Group>
-            { pieChartAllMeals?.length > 0 ?
+            {pieChartAllMeals?.length > 0 ?
                 <PieChart width={600} height={300}>
                     <Pie
                         data={pieChartData}
@@ -136,17 +155,17 @@ function MacrosDashboard() {
                         labelLine={false}
                         label={renderCustomizedLabel}
                     >
-                        {pieChartData.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /> ))}
+                        {pieChartData.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />))}
                     </Pie>
                     <Legend width={200} align="right" verticalAlign="middle" content={renderPieChartLegend} />
-                </PieChart> : 
-                <div className="macroPieChartPlaceholder"> No macros recorded for {pieChartDate} </div>
+                </PieChart> :
+                <div className="macroPieChartPlaceholder"> No macros recorded for {formatDate(pieChartDate)} </div>
             }
             <div className="allChartsContainer">
-                <MacroChart data={caloriesLineChartData} macro="Calories"/>
-                <MacroChart data={fatLineChartData} macro="Fat"/>
-                <MacroChart data={carbohydratesLineChartData} macro="Carbs"/>
-                <MacroChart data={proteinLineChartData} macro="Protein"/>
+                <MacroChart data={caloriesLineChartData} macro="Calories" />
+                <MacroChart data={fatLineChartData} macro="Fat" />
+                <MacroChart data={carbohydratesLineChartData} macro="Carbs" />
+                <MacroChart data={proteinLineChartData} macro="Protein" />
             </div>
         </div>
     );

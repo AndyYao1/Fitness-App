@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Form, Row, Container, Button, Modal } from "react-bootstrap";
-import { macrosData } from "../data/macros.ts";
+import { loadMacroData, saveMacrosData, deleteMacro } from "../actions/macros.ts";
 import MealCard from "../components/mealCard.js";
 
 function Macros() {
@@ -14,7 +14,7 @@ function Macros() {
 
     // default date is today
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [allMacrosData, setAllMacrosData] = useState(macrosData.find((macroData) => macroData.date === formatDate(date))?.meals);
+    const [allMacrosData, setAllMacrosData] = useState([]);
     const [show, setShow] = useState(false);
     const [form, setForm] = useState({});
     const [errors, setErrors] = useState({});
@@ -65,7 +65,6 @@ function Macros() {
         return newErrors;
     }
 
-    // TODO: Add to DB
     const handleAddMacro = (event) => {
         event.preventDefault();
 
@@ -74,22 +73,37 @@ function Macros() {
             setErrors(formErrors)
             event.stopPropagation();
         } else {
+            form.macro_id = crypto.randomUUID();
+            handleSave(form);
             setAllMacrosData([...allMacrosData, form])
             handleClose();
         }
     }
 
-    // TODO: Remove from DB
-    const handleRemove = (indexToRemove) => {
-        setAllMacrosData(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    const handleSave = async (macros) => {
+        saveMacrosData(date, macros);
+    }
+
+    const handleRemove = async (macro_id) => {
+        deleteMacro(date, macro_id)
+        setAllMacrosData(prev => prev.filter((meal) => meal.macro_id !== macro_id));
     }
 
     // need to update list of meals after date change
     const handleDateChange = (e) => {
         setDate(e.target.value);
-        setAllMacrosData(macrosData.find((macroData) => macroData.date === formatDate(e.target.value))?.meals);
         setTimeout(() => e.target.blur(), 50);
     }
+
+    const fetchData = async () => {
+        try {
+            loadMacroData(date).then(macrosData => setAllMacrosData(macrosData))
+        } catch { 
+
+        }
+    }
+
+    useEffect(() => {fetchData()}, [date])
 
     return (
         <div className="page" id="workouts">
@@ -100,8 +114,8 @@ function Macros() {
             </Form.Group>
             <Container>
                 <Row xs={3} md={4} className="g-3">
-                    {allMacrosData ? allMacrosData.map((meal, idx) =>
-                        <MealCard key={meal.name + idx} data={meal} idx={idx} handleRemove={handleRemove} />)
+                    {allMacrosData ? allMacrosData.map((meal) =>
+                        <MealCard key={meal.macro_id} data={meal} handleSave={handleSave} handleRemove={handleRemove} />)
                         : null}
                     <Col className="d-flex">
                         <Card className="macroCard flex-fill p-2">

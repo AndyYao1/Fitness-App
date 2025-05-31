@@ -5,7 +5,7 @@ import { Card, Button, Col, Form, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { MdDelete, MdEdit } from 'react-icons/md';
 
-function MealCard({ data, idx, handleRemove }) {
+function MealCard({ data, handleRemove, handleSave }) {
     const [name, setName] = useState(data.name);
     const [calories, setCalories] = useState(data.calories);
     const [fat, setFat] = useState(data.fat);
@@ -50,6 +50,8 @@ function MealCard({ data, idx, handleRemove }) {
             setCarbohydrates(form.carbohydrates);
             setProtein(form.protein);
             setImage(form.image);
+            form.macro_id = data.macro_id;
+            handleSave(form);
             handleClose();
         }
     }
@@ -84,7 +86,7 @@ function MealCard({ data, idx, handleRemove }) {
             <Card className="macroCard flex-fill p-1">
                 <Card.Img className="macroCardImg" src={image ? image : "/dinner-placeholder.png"} ></Card.Img>
                 <div className='macroCardBtnContainer'>
-                    <Button className="macroCardBtn" size="sm" variant="danger" onClick={() => handleRemove(idx)}><MdDelete></MdDelete></Button>
+                    <Button className="macroCardBtn" size="sm" variant="danger" onClick={() => handleRemove(data.macro_id)}><MdDelete></MdDelete></Button>
                     <Button className="macroCardBtn" size="sm" onClick={handleShow}><MdEdit></MdEdit></Button>
                 </div>
                 <Card.Body>

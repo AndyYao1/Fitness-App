@@ -7,8 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 function WorkoutsListItem({date, workouts, saveWorkouts, isActive, deleteWorkout}){
     const [exercises, setExercises] = useState(workouts);
     const [changed, setChanged] = useState(false);
-
-    // TODO: Add, remove, save to DB
+    
     const handleRemoveExercise = (removedIndex) => {
         setExercises(exercises.filter((_, index) => index !== removedIndex));
         deleteWorkout(date, exercises[removedIndex]);
@@ -66,7 +65,7 @@ function WorkoutsListItem({date, workouts, saveWorkouts, isActive, deleteWorkout
                             </Form>
                         </ListGroup.Item>
                     ))}
-                    <ListGroup.Item> <Button size="sm" onClick={handleAddExercise}>Add Exercise</Button>  <Button size="sm" onClick={() => console.log(exercises)}>Log</Button> </ListGroup.Item>
+                    <ListGroup.Item> <Button size="sm" onClick={handleAddExercise}>Add Exercise</Button>  </ListGroup.Item>
                 </ListGroup>
             </Accordion.Body>
         </Accordion.Item>

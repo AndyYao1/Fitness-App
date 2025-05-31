@@ -2,23 +2,37 @@
 
 import { createClient } from "../../../utils/supabase/server";
 
-export async function saveWorkoutData(date, workouts) {
+export async function saveMacrosData(date, macros) {
     const supabase = await createClient();
     const user_id = (await supabase.auth.getUser()).data.user.id;
+    macros.user_id = user_id;
+    macros.date = date;
     const { error } = await supabase
-        .from('workouts')
-        .upsert(workouts
-            .map(workout => 
-                ({...workout, user_id: user_id, date:date})
-        ))
+        .from('macros')
+        .upsert(macros)
         .select();
 }
 
-export async function loadWorkoutData() {
+export async function loadMacroData(date) {
     const supabase = await createClient();
     const user_id = (await supabase.auth.getUser()).data.user.id;
     const { data, error } = await supabase
-        .from('workouts')
+        .from('macros')
+        .select()
+        .eq('user_id', user_id)
+        .eq('date', date);
+    if (error) {
+
+    } else {
+        return data;
+    }
+}
+
+export async function loadAllMacroData() {
+    const supabase = await createClient();
+    const user_id = (await supabase.auth.getUser()).data.user.id;
+    const { data, error } = await supabase
+        .from('macros')
         .select()
         .eq('user_id', user_id);
     if (error) {
@@ -28,13 +42,13 @@ export async function loadWorkoutData() {
     }
 }
 
-export async function deleteWorkout(date, workout){
+export async function deleteMacro(date, macro_id){
     const supabase = await createClient();
     const user_id = (await supabase.auth.getUser()).data.user.id;
     const response = await supabase
-        .from('workouts')
+        .from('macros')
         .delete()
         .eq('date', date)
-        .eq('workout_id', workout.workout_id)
+        .eq('macro_id', macro_id)
         .eq('user_id', user_id);
 }

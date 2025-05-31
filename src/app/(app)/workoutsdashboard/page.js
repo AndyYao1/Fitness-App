@@ -14,9 +14,9 @@ function WorkoutsDashboard() {
                     let workoutMap = new Map();
                     for (let workout of workoutData) {
                         if (workoutMap.has(workout.name)) {
-                            workoutMap.get(workout.name).push({ "date": Date.parse(workout.date), "lbs": workout.lbs, "reps": workout.reps });
+                            workoutMap.get(workout.name).push({ "date": Date.parse(workout.date.replace(/-/g, '\/')), "lbs": workout.lbs, "reps": workout.reps });
                         } else {
-                            workoutMap.set(workout.name, [{ "date": Date.parse(workout.date), "lbs": workout.lbs, "reps": workout.reps }]);
+                            workoutMap.set(workout.name, [{ "date": Date.parse(workout.date.replace(/-/g, '\/')), "lbs": workout.lbs, "reps": workout.reps }]);
                         }
                     }
                     setParsedData(workoutMap);

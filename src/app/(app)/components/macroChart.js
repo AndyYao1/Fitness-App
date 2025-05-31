@@ -10,32 +10,33 @@ function MacroChart({data, macro}){
     const [dateRange, setDateRange] = useState("1M");
 
     // filters data based on date range
-    const filteredData = () => {
-        const today = new Date()
-        const startDate = new Date(today);
-        switch (dateRange) {
-            case "1M":
-                startDate.setMonth(today.getMonth() - 1);
-                break;
-            case "3M":
-                startDate.setMonth(today.getMonth() - 3);
-                break;
-            case "6M":
-                startDate.setMonth(today.getMonth() - 6);
-                break;
-            case "1Y":
-                startDate.setFullYear(today.getFullYear() - 1);
-                break;
-            default:
-                startDate.setFullYear(today.getFullYear() - 30);
-                break;
-        }
-        return Array.from(data.entries())
-        .filter(([date]) => date >= startDate)
-        .map((data) => ({"date": data[0], "value": data[1]}));
-    };
+    const today = new Date()
+    const startDate = new Date();
+    switch (dateRange) {
+        case "1M":
+            startDate.setMonth(today.getMonth() - 1);
+            break;
+        case "3M":
+            startDate.setMonth(today.getMonth() - 3);
+            break;
+        case "6M":
+            startDate.setMonth(today.getMonth() - 6);
+            break;
+        case "1Y":
+            startDate.setFullYear(today.getFullYear() - 1);
+            break;
+        default:
+            startDate.setFullYear(today.getFullYear() - 30);
+            break;
+    }
+    
+    const filteredData = data.size > 0 ? Array.from(data)
+        .map(macroData => ({"date": Date.parse(macroData[0].replace(/-/g, '\/')), "value": macroData[1]}))
+        .filter(macroData => macroData.date >= startDate)
+        .sort((a,b) => a.date > b.date) : [];
 
-    // MM/DD/YYYY => MM/DD/YY for shorter date display
+
+    // MM/DD/YYYY => MM/DD/YY for shorter date display 
     const formatDate = (date) => {
         let formattedDate = new Date(date).toLocaleDateString();
         formattedDate = formattedDate.substring(0, formattedDate.length - 4).concat(formattedDate.substring(formattedDate.length - 2));
@@ -57,7 +58,7 @@ function MacroChart({data, macro}){
     }
     
     return(
-        <ResponsiveContainer width="45%" height={300} className="chartContainer">
+        <div className="chartContainer">
             <div className="exerciseChartHeader">
                 {macro}
                 <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => setDateRange("ALL")}>ALL</Button>
@@ -67,7 +68,7 @@ function MacroChart({data, macro}){
                 <Button size="sm" className="exerciseChartHeaderBtn" onClick={() => setDateRange("1M")}>1M</Button>
             </div>
             <ResponsiveContainer className="exerciseChartBody">
-                <LineChart data={filteredData()} key={macro}
+                <LineChart data={filteredData} key={macro}
                     margin={{
                         top: 5,
                         right: 60,
@@ -75,7 +76,7 @@ function MacroChart({data, macro}){
                         bottom: 65}}>
                     <CartesianGrid strokeDasharray="3 2"/>
                     <XAxis dataKey="date" type="number" domain={['dataMin', 'dataMax']} tickFormatter={(date) => formatDate(date)}>
-                        <Label value="Date" position="bottom" offset={-2}/>
+                        <Label value="date" position="bottom" offset={-2}/>
                     </XAxis>
                     <YAxis type="number" domain={[dataMin => Math.max(0, dataMin - 200), 'dataMax']}>
                     </YAxis>
@@ -83,7 +84,7 @@ function MacroChart({data, macro}){
                     <Line type="monotone" dataKey="value" stroke="#82ca9d"/>
                 </LineChart>
             </ResponsiveContainer>
-        </ResponsiveContainer>
+        </div>
     )
 }
 

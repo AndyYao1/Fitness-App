@@ -3,12 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Accordion } from "react-bootstrap";
 import WorkoutsListItem from "../components/workoutsListItem.js";
-import { createClient } from "../../../utils/supabase/client.ts";
 import { saveWorkoutData, loadWorkoutData, deleteWorkout } from "../actions/workouts.ts";
 
 function Workouts(){
-    const supabase = createClient();
-
     const [allWorkoutsData, setAllWorkoutsData] = useState([]);
     // default date is today
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -49,7 +46,7 @@ function Workouts(){
         event.preventDefault();
         if (dates.includes(date)){
             setActiveKey(date);
-        } else { // TODO: Add to DB
+        } else { 
             const newDate = new Date(date);
             const newWorkout = { "date": date, "workouts": [] };
             const updated = [...allWorkoutsData];
