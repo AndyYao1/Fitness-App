@@ -4,7 +4,7 @@ import './workoutsListItem.css';
 import { Accordion, Button, ListGroup, Form, Col, Row } from "react-bootstrap";
 import React, { useEffect, useRef, useState } from "react";
 
-function WorkoutsListItem({date, workouts, saveWorkouts, isActive, deleteWorkout}){
+function WorkoutsListItem({date, workouts, saveWorkouts, isActive, deleteWorkout, allWorkoutNames}){
     const [exercises, setExercises] = useState(workouts);
     const [changed, setChanged] = useState(false);
     
@@ -53,7 +53,12 @@ function WorkoutsListItem({date, workouts, saveWorkouts, isActive, deleteWorkout
                         <ListGroup.Item className='exerciseListItem' key={exercise.workout_id}>
                             <Form>
                                 <Row xs={16}>
-                                    <Col xs={2}><Form.Control size="sm" placeholder="Enter exercise" type="text" value={exercise.name} onChange={(e) => handleUpdateExercise(index, "name", e.target.value)}/></Col>: 
+                                    <Col xs={3}>
+                                        <input type='text' placeholder='Enter exercise' value={exercise.name} onChange={(e) => handleUpdateExercise(index, "name", e.target.value)} list='exerciseList'/>
+                                        <datalist id='exerciseList'>
+                                            {allWorkoutNames.map(name => <option key={name}> {name} </option>)}
+                                        </datalist> :
+                                    </Col>
                                     <Col xs={1}><Form.Control size="sm" type="text" value={exercise.reps} onChange={(e) => handleUpdateExercise(index, "reps", e.target.value)}/></Col>
                                     <Col xs={1}>reps</Col>
                                     <Col xs={1}><Form.Control size="sm" type="text" value={exercise.lbs} onChange={(e) => handleUpdateExercise(index, "lbs", e.target.value)}/></Col>

@@ -11,18 +11,21 @@ function Workouts(){
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const dates = allWorkoutsData.map((workout) => workout.date);
     const [activeKey, setActiveKey] = useState(null);
+    const [allWorkoutNames, setAllWorkoutNames] = useState([]);
 
     const fetchData = async () => {
         try {
             loadWorkoutData()
                 .then(workoutData => {
                     let workoutMap = new Map();
+                    let workoutNames = new Set();
                     for (let workout of workoutData){
                         if (workoutMap.has(workout.date)){
                             workoutMap.get(workout.date).push(workout);
-                            } else {
+                        } else {
                             workoutMap.set(workout.date, [workout]);
                         }
+                        workoutNames.add(workout.name);
                     }
                     
                     const formattedWorkouts = Array.from(workoutMap)
@@ -31,6 +34,7 @@ function Workouts(){
                         .map(([date, exercises]) => ({date:date, workouts:exercises}));
                         
                     setAllWorkoutsData(formattedWorkouts);
+                    setAllWorkoutNames(Array.from(workoutNames).sort());
                     setActiveKey(formattedWorkouts[0].date)});
         }
         catch {
@@ -102,6 +106,7 @@ function Workouts(){
                         saveWorkouts={handleSaveWorkouts}
                         isActive={activeKey == workout.date}
                         deleteWorkout={handleDeleteWorkout}
+                        allWorkoutNames={allWorkoutNames}
                     />)
                 }
             </Accordion>
