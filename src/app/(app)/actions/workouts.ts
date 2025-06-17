@@ -5,7 +5,6 @@ import { createClient } from "../../../utils/supabase/server";
 export async function saveWorkoutData(date, workouts) {
     const supabase = await createClient();
     const user_id = (await supabase.auth.getUser()).data.user.id;
-    console.log("saved");
     const { error } = await supabase
         .from('workouts')
         .upsert(workouts

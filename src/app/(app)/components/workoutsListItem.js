@@ -108,7 +108,7 @@ function WorkoutsListItem({ date, workouts, saveWorkouts, isActive, deleteWorkou
                             </Form>
                         </ListGroup.Item>
                     ))}
-                    <ListGroup.Item> <Button size="sm" onClick={handleAddExercise}>Add Exercise</Button> <Button size="sm" onClick={() => console.log(exercises)}>Log</Button>  </ListGroup.Item>
+                    <ListGroup.Item> <Button size="sm" onClick={handleAddExercise}>Add Exercise</Button> </ListGroup.Item>
                 </ListGroup>
             </Accordion.Body>
         </Accordion.Item>
